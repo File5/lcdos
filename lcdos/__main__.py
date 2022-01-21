@@ -1,2 +1,2 @@
-from lcdos.main import main
+from lcdos.main import main, main_gamepad
 main()

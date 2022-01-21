@@ -1,9 +1,13 @@
+import time
+
 from lcdui.views.lineinput import LineInput
 from lcdui.display import BufferedRPLCDDisplay, Cursor
 from lcdui.event import Event, EventType, InputEvent
 from lcdui.views import Window, Button, CheckBox, Radio, Text, LineInput, ListItem
 from lcdui.views.pagescroll import PageScrollLayout
 from lcdui.utils import getch
+
+from gamepad import PS4, available as gamepad_available
 
 
 class MainWindow(Window):
@@ -71,6 +75,55 @@ def main():
             update_display()
         elif seq[-1] != ESC and seq[-2:] != MOVE_SEQ:
             w.handle(InputEvent(c))
+            update_display()
+
+
+def main_gamepad():
+    while not gamepad_available():
+        time.sleep(1)
+
+    gamepad = PS4()
+
+    display = BufferedRPLCDDisplay()
+    w = MainWindow(20, 4)
+    display.canvas.position = (0, 0)
+    canvas = display.canvas.sub_canvas(20, 4)
+    w.print(canvas)
+
+    def update_display():
+        w.print(canvas)
+
+    while True:
+        event_type, control, value = gamepad.getNextEvent()
+        x, y = canvas.position
+
+        if (control, value) == ('PS', True):
+            break
+        elif (control, value) == ('DPAD-Y', -1.0):
+            if y > 0:
+                pass#canvas.position = x, y - 1
+            w.handle(Event(EventType.UP))
+            update_display()
+        elif (control, value) == ('DPAD-Y', 1.0):
+            if y < canvas.size[1] - 1:
+                pass#canvas.position = x, y + 1
+            w.handle(Event(EventType.DOWN))
+            update_display()
+        elif (control, value) == ('DPAD-X', -1.0):
+            if x > 0:
+                pass#canvas.position = x - 1, y
+            w.handle(Event(EventType.LEFT))
+            update_display()
+        elif (control, value) == ('DPAD-X', 1.0):
+            if x < canvas.size[0] - 1:
+                pass#canvas.position = x + 1, y
+            w.handle(Event(EventType.RIGHT))
+            update_display()
+        elif (control, value) == ('CROSS', True):
+            w.handle(Event(EventType.ACTION))
+            update_display()
+        elif (control, value) == ('CIRCLE', True):
+            w.handle(InputEvent('o'))
             update_display()
 
 
