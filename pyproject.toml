@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "lcdos"
+version = "0.1.0"
+description = ""
+authors = ["Aleksandr Zuev <zuev08@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+lcdui = { git = "https://github.com/File5/lcdui.git", branch = "main" }
+gamepad = { git = "https://github.com/File5/python-gamepad.git", branch = "master" }
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
